@@ -1,0 +1,116 @@
+{% load user_filters %}
+{% load static %}
+{% load thumbnail %}
+
+
+    <div class="max-w-7xl mx-auto">
+        <div class="h-9"></div>
+            <div class=" p-10">
+
+         <h2 class="text-5xl">Руководитель</h2>
+            <div class="h-9"></div>
+
+
+        </div>
+
+
+        <div class="max-w-5xl mx-auto grid grid-cols-5 gap-6 py-5">
+            <div class="col-span-3">
+                <img src="{% static 'images/director.png' %}" alt="">
+            </div>
+            <div class="col-span-2 ">
+                <div class="flex-col flex">
+                    <span class="text-2xl ">Шарапов Артем Андреевич</span>
+                    <span class="text-lg pt-5">Ассистент</span>
+                    <span class="text-lg pt-5">Кафедра прикладной информатики и информационных систем</span>
+                    <span class="text-lg pt-5">Контакты: +7 (383) 343-18-53</span>
+                    <span class="text-lg">Почта: sharapov_artem@mail.ru</span>
+                    <div class="flex flex-row pt-5">
+                        <a href="https://web.telegram.org/a/#1387720619" class="px-2"> <img class="size-10 bg-cyan-200"
+                                                       src="{% static 'images/telegram.svg' %}"
+                                                       alt=""></a>
+                        <a href="https://vk.com/sharapov.artem.andreevich" class="px-2"><img class="size-10  bg-cyan-200"
+                                                      src="{% static 'images/vkontakte.svg' %}"
+                                                      alt=""></a>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="h-9"></div>
+<div class="h-9"></div>
+
+        <div class="flex flex-row bg-cyan-100 p-12">
+            <div class="flex flex-col ">
+                <h5 class="text-5xl">КОНТАКТЫ</h5>
+                <div class="h-9"></div>
+                <h6 class="text-3xl">Режим работы</h6>
+                <span class="text-lg">ПН-ПТ 09:00-18:00</span>
+                <span class="text-lg">Тел: +7 (953) 785-54-99</span>
+                <span class="text-lg">Почта: sharapov_artem@mail.ru</span>
+                <span class="text-lg py-3">Адрес: <b>630108</b> г. Новосибирск ул. Плахотного,<b>10</b></span>
+            <div style="position:relative;overflow:hidden;"><a href="https://yandex.ru/maps/65/novosibirsk/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:0px;">Новосибирск</a><a href="https://yandex.ru/maps/65/novosibirsk/?ll=82.862994%2C54.986460&utm_medium=mapframe&utm_source=maps&z=17.17" style="color:#eee;font-size:12px;position:absolute;top:14px;">Новосибирск — Яндекс Карты</a><iframe src="https://yandex.ru/map-widget/v1/?ll=82.862994%2C54.986460&z=17.17" width="560" height="400" frameborder="1" allowfullscreen="true" style="position:relative;"></iframe></div>
+            </div>
+            <div class="ml-auto">
+                <div class="flex flex-col bg-cyan-200 p-10">
+                    <h5 class="text-5xl">Написать нам</h5>
+                    <span class="text-lg">Если у вас остались вопросы, напишите нам</span>
+                    <div class="h-9"></div>
+
+
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="accent-red-800">
+                                    {{ error|escape }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="accent-red-800">
+                                {{ error|escape }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form class="max-w-md mx-auto" method="POST">
+
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="grid md:grid-cols-2 md:gap-6">
+
+                                <div class="relative z-0 w-full mb-5 group"
+                                     {% if field.field.required %}
+                                     aria-required="true"
+                                     {% else %}
+                                     aria-required="false"
+                                     {% endif %}
+                                >
+                                        {{ field|without_placeholder|addclass:'block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer' }}
+
+                                    <label for="{{ field.id_for_label }}"
+                                           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                        {{ field.label }}
+                                        {% if field.field.required %}
+                                            <span class="accent-red-600">*</span>
+                                        {% endif %}
+                                    </label>
+
+                                </div>
+                            </div>
+
+                        {% endfor %}
+
+                        <button type="submit"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Отправить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>

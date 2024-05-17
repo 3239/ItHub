@@ -1,0 +1,21 @@
+{% extends "_base_reg.html" %}
+{% load static %}
+{% block body %}
+    <body>
+    <header>
+        {% include 'includes/header.html' %}
+
+
+    {% include 'includes/carousel.html' %}
+    </header>
+
+
+    <main class="bg-fixed  bg-cover "
+          style="background-image:  linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(22, 43, 76, 0.4)), url({% static 'images/bg-public.jpeg' %});">
+
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    </body>
+{% endblock %}

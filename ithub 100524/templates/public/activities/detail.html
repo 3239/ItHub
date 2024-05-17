@@ -1,0 +1,54 @@
+{% extends "_base_public.html" %}
+{% load user_filters %}
+{% load static %}
+{% load thumbnail %}
+
+{% block content %}
+
+
+    <div class="max-w-3xl mx-auto">
+        <div class="h-9"></div>
+        <div class=" p-10">
+
+            <h1 class="text-5xl font-bold">{{ activities_obj.title }}</h1>
+            <div class="h-9"></div>
+            <p class="text-lg">{{ activities_obj.full_text }}</p>
+                <div class="h-9"></div>
+
+                  {% thumbnail activities_obj.image "768x540" crop="center" as im %}
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="">
+                        {% empty %}
+                            {% with 'http://'|add:request.get_host|add:STATIC_URL|add:'images/intelect-image.jpg' as path %}
+                                {% thumbnail path "768x540" crop="center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                {% endthumbnail %}
+                            {% endwith %}
+                        {% endthumbnail %}
+            <div class="p-1 flex-row flex pt-10">
+                <a class="flex flex-row text-md" href="">Поделиться </a> <img src="{% static 'images/share.svg' %}"
+                                                                              alt="">
+                <div class="ml-auto">
+                    <span>{{ activities_obj.datetime_pub|date:"j M Y" }} •</span>
+                    <span>{{ activities_obj.views }}
+                        {% if activities_obj.views == 1 %}
+                            просмотр
+                        {% elif activities_obj.views < 5 %}
+                            просмотра
+                        {% else %}
+                            просмотров
+                        {% endif %}
+                                </span>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="h-9"></div>
+
+    <div class="h-9"></div>
+    <div class="h-9"></div>
+
+
+
+{% endblock content %}

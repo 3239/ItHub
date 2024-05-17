@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block body %}
+    <body class="bg-cover bg-center bg-repeat  "
+     style="  background-image: url({% static 'images/background-profile.png' %});">
+    <header>
+        {% include 'includes/header.html' %}
+    </header>
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    </body>
+{% endblock %}

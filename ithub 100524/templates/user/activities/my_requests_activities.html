@@ -1,0 +1,94 @@
+{% extends "_base_profile.html" %}
+
+{% load i18n %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block content %}
+    <div class="max-w-5xl mx-auto">
+
+
+        <div class="grid grid-cols-12 mt-10">
+            {% include 'user/accounts/base_sidebar.html' %}
+            <div class="p-10  text-medium text-gray-400 bg-gray-800 rounded-lg  col-span-9 ">
+                <div class="flex flex-row">
+                    <h3 class="text-2xl font-bold text-white mb-2">Мои зарегистрированные мероприятия</h3>
+
+                </div>
+                <div class="grid grid-cols-2 gap-1 ">
+
+                    {% if not my_requests %}
+                        <h3 class="text-lg font-bold text-white mb-2">Отсутствуют</h3>
+
+                    {% endif %}
+                    {% for my_request in my_requests %}
+
+                        {% with my_request.activity as activities_obj %}
+
+                            <div class="max-w-sm pt-10 ">
+                                {% thumbnail activities_obj.image "304x171" crop="center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="">
+                                {% empty %}
+                                    {% with 'http://'|add:request.get_host|add:STATIC_URL|add:'images/intelect-image.jpg' as path %}
+                                        {% thumbnail path "304x171" crop="center" as im %}
+                                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                        {% endthumbnail %}
+                                    {% endwith %}
+                                {% endthumbnail %}
+                                <div class="pt-3">
+
+                                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                        {{ activities_obj.title }}</h5>
+
+                                    <p class="mb-3 text-lg font-normal text-gray-700 dark:text-gray-400">{{ activities_obj.full_text|truncatechars:30 }}</p>
+
+
+                                </div>
+                            </div>
+                            <div class="max-w-sm pt-10 ">
+                                <div class="p-1 flex-col flex">
+                                    {% if my_request.id %}
+                                        <span>Заявка под номером {{ my_request.id }} </span>
+
+                                    {% endif %}
+                                    {% if my_request.first_name %}
+                                        <span>{{ my_request.first_name }} </span>
+
+                                    {% endif %}
+                                    {% if my_request.surname %}
+                                        <span>{{ my_request.surname }} </span>
+
+                                    {% endif %}
+                                    {% if my_request.last_name %}
+                                        <span>{{ my_request.last_name }} </span>
+
+                                    {% endif %}
+                                    {% if my_request.email %}
+                                        <span>{{ my_request.email }} </span>
+
+                                    {% endif %}
+                                    {% if my_request.education_entity %}
+                                        <span>{{ my_request.education_entity }} </span>
+
+                                    {% endif %}
+                                    <div class="mt-10">
+                                        {% if my_request.status == 'UNA' %}
+                                            <span class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">{{ my_request.get_status_display }}</span>
+                                        {% elif my_request.status  == 'UNK' %}
+                                            <span class="focus:outline-none text-white bg-yellow-100 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-yellow-400 dark:hover:bg-yellow-300 dark:focus:ring-yellow-200">{{ my_request.get_status_display }}</span>
+                                        {% elif my_request.status == 'ACC' %}
+                                            <span class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">{{ my_request.get_status_display }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+                        {% endwith %}
+
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

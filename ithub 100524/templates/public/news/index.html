@@ -1,0 +1,119 @@
+{% extends "_base_public.html" %}
+{% load user_filters %}
+{% load static %}
+{% load thumbnail %}
+
+{% block content %}
+
+
+    <div class="max-w-5xl mx-auto">
+        <div class="h-9"></div>
+        <div class=" p-10">
+
+            <h2 class="text-5xl ">Новости</h2>
+            <div class="h-9"></div>
+
+
+        </div>
+        <div class="h-9"></div>
+        <div class="grid grid-cols-3 gap-1 ">
+
+            {% if not news_list %}
+                <h3 class="text-lg font-bold text-white mb-2">Отсутствуют</h3>
+
+            {% endif %}
+            {% for article in news_list %}
+
+                {% if forloop.counter == 1 %}
+                    <a href="{% url 'news:detail_news' article.id %}" class="col-span-3 flex flex-row ">
+                        {% thumbnail article.image "632x355" crop="center" as im %}
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="">
+                        {% empty %}
+                            {% with 'http://'|add:request.get_host|add:STATIC_URL|add:'images/intelect-image.jpg' as path %}
+                                {% thumbnail path "632x355" crop="center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                {% endthumbnail %}
+                            {% endwith %}
+                        {% endthumbnail %}
+                        <div class=" flex flex-col px-5">
+
+                            <h5 class="mb-2 text-3xl font-bold tracking-tight text-gray-900 ">
+                                {{ article.title }}</h5>
+
+                            <p class="mb-3 text-lg font-normal text-gray-700 dark:text-cyan-950">{{ article.full_text|truncatechars:100 }}</p>
+
+
+                            <div class="p-1 flex-row flex">
+
+                                <span>{{ article.datetime_pub|date:"j M Y" }} •</span>
+                                <span>{{ article.views }}
+                                    {% if article.views == 1 %}
+                                        просмотр
+                                    {% elif  article.views == 0 %}
+                                        просмотров
+                                    {% elif  article.views < 5 %}
+                                        просмотра
+                                    {% else %}
+                                        просмотров
+                                    {% endif %}
+                                </span>
+
+                            </div>
+                        </div>
+                    </a>
+
+
+                {% else %}
+
+
+                    <div class="max-w-sm pt-10 ">
+                        <a href="{% url 'news:detail_news' article.id %}">
+                            {% thumbnail article.image "304x171" crop="center" as im %}
+                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="">
+                            {% empty %}
+                                {% with 'http://'|add:request.get_host|add:STATIC_URL|add:'images/intelect-image.jpg' as path %}
+                                    {% thumbnail path "304x171" crop="center" as im %}
+                                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                    {% endthumbnail %}
+                                {% endwith %}
+                            {% endthumbnail %}
+                            <div class="pt-3">
+
+                                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+                                    {{ article.title }}</h5>
+
+                                <p class="mb-3 text-lg font-normal text-gray-700 dark:text-cyan-950">{{ article.full_text|truncatechars:78 }}</p>
+
+
+                            </div>
+
+                            <div class="p-1 flex-row flex">
+
+                                <span>{{ article.datetime_pub|date:"j M Y" }} •</span>
+                                <span>{{ article.views }}
+                                    {% if article.views == 1 %}
+                                        просмотр
+                                    {% elif  article.views == 0 %}
+                                        просмотров
+                                    {% elif  article.views < 5 %}
+                                        просмотра
+                                    {% else %}
+                                        просмотров
+                                    {% endif %}
+                                </span>
+
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="h-9"></div>
+    <div class="h-9"></div>
+
+
+
+{% endblock content %}

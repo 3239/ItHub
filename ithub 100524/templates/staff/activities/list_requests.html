@@ -1,0 +1,158 @@
+{% extends "_base_profile.html" %}
+
+{% load i18n %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block content %}
+    <div class="max-w-5xl mx-auto">
+
+
+        <div class="grid grid-cols-12 mt-10">
+            {% include 'staff/accounts/staff_sidebar.html' %}
+            <div class="p-10  text-medium text-gray-400 bg-gray-800 rounded-lg  col-span-9 ">
+                <div class="flex flex-row">
+                    <h3 class="text-2xl font-bold text-white mb-2">Поданные заявки на мероприятия
+                    {%  if  human_value_q  %}
+                        по типу:
+                        {{ human_value_q }}
+                        {% endif %}
+                    </h3>
+
+                </div>
+
+
+                <div class="grid grid-cols-2 gap-1 ">
+                    {% if not requests_activities %}
+                        <h3 class="text-lg font-bold text-white mb-2">Отсутствуют</h3>
+
+                    {% endif %}
+                    {% for request_received in requests_activities %}
+
+                        {% with request_received.activity as activities_obj %}
+
+                            <div class="max-w-sm pt-10 ">
+                                {% thumbnail activities_obj.image "304x171" crop="center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="">
+                                {% empty %}
+                                    {% with 'http://'|add:request.get_host|add:STATIC_URL|add:'images/intelect-image.jpg' as path %}
+                                        {% thumbnail path "304x171" crop="center" as im %}
+                                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                        {% endthumbnail %}
+                                    {% endwith %}
+                                {% endthumbnail %}
+                                <div class="pt-3">
+
+                                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                        {{ activities_obj.title }}</h5>
+
+                                    <p class="mb-3 text-lg font-normal text-gray-700 dark:text-gray-400">{{ activities_obj.full_text|truncatechars:30 }}</p>
+
+
+                                </div>
+                            </div>
+                            <div class="max-w-sm pt-10 ">
+                                <div class="p-1 flex-col flex">
+                                    {% if request_received.id %}
+                                        <span>Заявка под номером {{ request_received.id }} </span>
+
+                                    {% endif %}
+                                    {% if request_received.first_name %}
+                                        <span>{{ request_received.first_name }} </span>
+
+                                    {% endif %}
+                                    {% if request_received.surname %}
+                                        <span>{{ request_received.surname }} </span>
+
+                                    {% endif %}
+                                    {% if request_received.last_name %}
+                                        <span>{{ request_received.last_name }} </span>
+
+                                    {% endif %}
+                                    {% if request_received.email %}
+                                        <span>{{ request_received.email }} </span>
+
+                                    {% endif %}
+                                    {% if request_received.education_entity %}
+                                        <span>{{ request_received.education_entity }} </span>
+
+                                    {% endif %}
+
+                                    <div class="mt-10">
+                                        <form method="POST"
+                                              action="{% url 'activities:change_status_activities_staff' request_received.pk %}">
+                                            {% csrf_token %}
+                                            {% if request_received.status == 'UNK' %}
+                                                <span class="focus:outline-none text-white bg-yellow-100 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-yellow-400 dark:hover:bg-yellow-300 dark:focus:ring-yellow-200">{{ request_received.get_status_display }}</span>
+                                            {% elif request_received.status == 'UNA' %}
+                                                <span class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">{{ request_received.get_status_display }}</span>
+                                            {% elif request_received.status == 'ACC' %}
+                                                <span class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">{{ request_received.get_status_display }}</span>
+                                            {% endif %}
+                                            <div class="mt-10">
+
+                                                {% for choice in form.status.field.choices %}
+                                                    {% if request_received.status == 'UNK' and  choice.0 == 'UNK' %}
+                                                    {% elif request_received.status == 'UNA' and   choice.0 == 'UNA' %}
+                                                    {% elif request_received.status == 'ACC' and  choice.0 == 'ACC' %}
+                                                    {% else %}
+
+                                                        {% if choice.0 == 'UNK' %}
+                                                            <label for='{{ form.status.auto_id }}_{{ request_received.pk }}_{{ forloop.counter0 }}'
+                                                                   class="inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-white dark:bg-yellow-400 dark:hover:bg-gray-700">
+                                                                Поставить
+                                                                на рассмотрение
+                                                                <input name='{{ form.status.name }}'
+                                                                       id='{{ form.status.auto_id }}_{{ request_received.pk }}_{{ forloop.counter0 }}'
+                                                                       type='radio' value='{{ choice.0 }}'
+                                                                       class="hidden peer"
+                                                                       onclick="this.form.submit()"
+                                                                >
+
+                                                            </label>
+                                                        {% elif choice.0 == 'UNA' %}
+                                                            <label for='{{ form.status.auto_id }}_{{ request_received.pk }}_{{ forloop.counter0 }}'
+                                                                   class="inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-white dark:bg-red-500 dark:hover:bg-gray-700">
+                                                                Отклонить
+                                                                <input name='{{ form.status.name }}'
+                                                                       id='{{ form.status.auto_id }}_{{ request_received.pk }}_{{ forloop.counter0 }}'
+                                                                       type='radio' value='{{ choice.0 }}'
+                                                                       class="hidden peer"
+                                                                       onclick="this.form.submit()"
+                                                                >
+
+                                                            </label>
+                                                        {% elif choice.0 == 'ACC' %}
+                                                            <label for='{{ form.status.auto_id }}_{{ request_received.pk }}_{{ forloop.counter0 }}'
+                                                                   class="inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-white dark:bg-green-800 dark:hover:bg-gray-700">
+                                                                Одобрить
+                                                                <input name='{{ form.status.name }}'
+                                                                       id='{{ form.status.auto_id }}_{{ request_received.pk }}_{{ forloop.counter0 }}'
+                                                                       type='radio' value='{{ choice.0 }}'
+                                                                       class="hidden peer"
+                                                                       onclick="this.form.submit()"
+                                                                >
+
+                                                            </label>
+                                                        {% endif %}
+                                                    {% endif %}
+
+
+
+                                                {% endfor %}
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        {% endwith %}
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
